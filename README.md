@@ -85,7 +85,8 @@ The platform team commits infra changes to git -- the pipeline applies them. No 
 
 9 - On the Unlock Jenkins page (http://{HostIPAddress}:8080), paste this password into the Administrator password field and click Continue. Note: make sure your cloud firewall rules allow inbound TCP 8080. 
 
-    ![unlock-jenkins](image.png)
+<img width="1465" height="613" alt="image" src="https://github.com/user-attachments/assets/792271e2-6810-4aa4-a4d2-fcf6cd02b638" />
+
 
 10 - Click one of the two options shown:
 
