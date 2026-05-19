@@ -106,3 +106,87 @@ The platform team commits infra changes to git -- the pipeline applies them. No 
     If the page does not automatically refresh after a minute, use your web browser to refresh the page manually.
 
     If required, log in to Jenkins using the credentials of the user you just created and you are ready to start using Jenkins!
+
+12 - How to set AWS credentials in Jenkins: (Option 1)
+
+    In Jenkins: Manage Jenkins → Credentials → System → Global → Add Credentials
+
+    (You can get from C:\Users\{yourUSER}\.aws\credentials if Windows)
+    Kind: Secret text
+    ID: aws-access-key-id → value(Secret): your access key
+    ID: aws-secret-access-key → value(Secret): your secret key
+
+Then in your Jenkinsfile:
+
+    pipeline {
+      agent any
+    
+      environment {
+        AWS_DEFAULT_REGION = "eu-west-1"
+      }
+    
+      stages {
+        stage('Init') {
+          steps {
+            withCredentials([
+              string(credentialsId: 'aws-access-key-id',     variable: 'AWS_ACCESS_KEY_ID'),
+              string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+            ]) {
+              sh 'terraform init'
+            }
+          }
+        }
+      }
+    }
+
+Note: If you're using static keys, wrap each sh block in withCredentials as shown in the previous file.
+
+13 - IAM role on the Jenkins EC2 instance: (Option 2 - Recommended for teams) 
+
+    The rule of thumb: if something runs on AWS infrastructure, give it a role. Only use static keys for things running outside AWS (like a local machine or a third-party CI system).
+    
+    If Jenkins runs on an EC2 instance, attach an IAM role to that instance with the permissions Terraform needs. No credentials stored anywhere — the AWS SDK picks them up automatically from the instance metadata.
+    In AWS:
+
+    Create an IAM role with the necessary policies (AmazonEKSFullAccess, IAMFullAccess, AmazonVPCFullAccess, etc.)
+    Attach the role to the Jenkins EC2 instance: EC2 → Actions → Security → Modify IAM role
+
+Your Jenkinsfile then needs no credential handling at all:
+
+    pipeline {
+      agent any
+    
+      environment {
+        AWS_DEFAULT_REGION = "eu-west-1"
+      }
+    
+      stages {
+        stage('Init') {
+          steps {
+            sh 'terraform init'
+          }
+        }
+    
+        stage('Plan') {
+          steps {
+            sh 'terraform plan -out=tfplan'
+          }
+        }
+    
+        stage('Approve') {
+          steps {
+            input message: 'Apply this plan?', ok: 'Apply'
+          }
+        }
+    
+        stage('Apply') {
+          steps {
+            sh 'terraform apply tfplan'
+          }
+        }
+      }
+    }
+
+If Jenkins runs on EC2 with an IAM role there's no withCredentials block needed anywhere — the pipeline is clean as shown. If you're using static keys, wrap each sh block in withCredentials as shown in the previous answer.
+
+
