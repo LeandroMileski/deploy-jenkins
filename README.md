@@ -37,7 +37,7 @@ The platform team commits infra changes to git -- the pipeline applies them. No 
     docker:dind \
     --storage-driver overlay2
 
-5 - Create a Dockerfile with the following content:
+5 - Create a Dockerfile (vim Dockerfile) with the following content:
 
     FROM jenkins/jenkins:2.555.2-jdk21
     USER root
