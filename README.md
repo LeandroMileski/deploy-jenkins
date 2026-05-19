@@ -73,13 +73,9 @@ The platform team commits infra changes to git -- the pipeline applies them. No 
     --volume jenkins-docker-certs:/certs/client:ro \
     my-jenkins-ocean-blue:22000-1
 
-8 - When you first access a new Jenkins controller, you are asked to unlock it using an automatically-generated password. 
+8 - When you first access a new Jenkins controller, you are asked to unlock it using an automatically-generated password. It's located in /var/jenkins_home/secrets/initialAdminPassword. 
 
-    # You need to retrieve the Jenkins container id or name using docker ps; use it as input on the second command.
-
-    docker ps
-
-    sudo docker exec ${CONTAINER_ID or CONTAINER_NAME} cat /var/jenkins_home/secrets/initialAdminPassword
+    sudo docker exec jenkins-blueocean cat /var/jenkins_home/secrets/initialAdminPassword
 
     # Copy the password
 
