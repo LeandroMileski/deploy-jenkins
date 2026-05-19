@@ -3,7 +3,7 @@ The platform team commits infra changes to git -- the pipeline applies them. No 
 
 1 - spin up a server, on any cloud platform.
 
-2 - SHH into the server. Install docker and set permissions:
+2 - SSH into the server. Install docker and set permissions:
     
     sudo snap install docker
     sudo addgroup --system docker
@@ -83,7 +83,7 @@ The platform team commits infra changes to git -- the pipeline applies them. No 
 
     # Copy the password
 
-9 - On the Unlock Jenkins page (http://{HostIPAddress}:8080), paste this password into the Administrator password field and click Continue. Note: cloud firewall rules must allow inbound TCP 8080. 
+9 - On the Unlock Jenkins page (http://{HostIPAddress}:8080), paste this password into the Administrator password field and click Continue. Note: make sure your cloud firewall rules allow inbound TCP 8080. 
 
     ![unlock-jenkins](image.png)
 
